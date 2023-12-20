@@ -1,0 +1,1 @@
+pyinstaller -y -D --add-data ./font:font --add-data ./logo:logo --add-data ./utils:utils --add-data ./conf:conf  --onefile --windowed -n xtify-photo-border gui.py  
