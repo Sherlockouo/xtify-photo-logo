@@ -1,6 +1,7 @@
+import os
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication, QProgressBar,QMainWindow,QWidget, QVBoxLayout, QLabel, QPushButton, QFileDialog
-from PySide6.QtGui import QDropEvent, QDragEnterEvent,QPixmap
+from PySide6.QtWidgets import QApplication, QProgressBar,QMainWindow,QWidget, QHBoxLayout,QVBoxLayout, QLabel, QPushButton, QFileDialog
+from PySide6.QtGui import QDropEvent, QDragEnterEvent,QPixmap,QMovie
 from PySide6.QtWidgets import QFrame
 from PySide6.QtCore import Signal
 
@@ -39,6 +40,7 @@ class DropFrame(QFrame):
             self.label.setText(file_path)
         else:
             self.label.setText("拖拽文件夹或图片到此处")
+            self.file_path.emit("")
             
         self.clicked.connect(self.openFileDialog)  # 断开连接，防止再次触发
 
@@ -98,9 +100,26 @@ class MainWindow(QMainWindow):
         # 创建一个按钮用于开始处理图片
         self.process_button = QPushButton("开始处理")
         self.process_button.clicked.connect(self.start_processing)
-        self.process_button.setStyleSheet("background-color:#cad4ba; border-radius:8px;")
-        main_layout.addWidget(self.process_button)
+        self.process_button.setFixedSize(80 ,60)
+        self.process_button.setStyleSheet("background-color:#008e59; border-radius:8px;")
+        main_layout.addWidget(self.process_button,alignment=Qt.AlignmentFlag.AlignCenter)
         
+        # # 创建一个 QLabel 实例
+        # self.loading_label = QLabel()
+        # self.loading_label.setAlignment(Qt.AlignCenter)
+
+        # # 创建一个 QMovie 实例并加载加载动画文件
+        # self.loading_movie = QMovie(os.path.join(os.path.dirname(__file__),"./resource/images/loading.gif"))
+        # self.loading_label.setMovie(self.loading_movie)
+
+        # 将 QLabel 显示在按钮上
+        # self.process_button.setFlat(True)
+        # self.process_button.setStyleSheet("background-color:#008e59; border-radius:8px;")
+        # self.process_button.setLayout(QHBoxLayout())
+        # self.process_button.layout().addWidget(self.loading_label,alignment=Qt.AlignmentFlag.AlignCenter)
+        
+        # self.loading_movie.start()
+
         
         self.progress_bar = QProgressBar(self)
         self.progress_bar.hide()
@@ -119,16 +138,29 @@ class MainWindow(QMainWindow):
         # 暂时用不上
         # self.preview.show_image(file_path)
         self.file_path = file_path
+        if self.file_path == "":
+            self.process_button.setText("开始处理")
+            self.process_button.repaint()
+            QApplication.processEvents()
+        
 
     def start_processing(self):
-        # self.process_button.clicked.disconnect(self.start_processing)
-        # self.process_button.hide()
-        # self.progress_bar.show()
+        if self.file_path == None or self.file_path == "":
+            return
+        
+        
+        self.process_button.setText("处理中")
+        self.process_button.setStyleSheet("background-color:#949c97; border-radius:8px;")
+        self.process_button.repaint()
+        QApplication.processEvents()
         # 在这里添加处理图片的逻辑
         handle_images(self.file_path)
-        # self.progress_bar.hide()
-        # self.process_button.show()
-        # self.process_button.clicked.connect(self.start_processing)
+        self.process_button.setText("处理完成✅")
+        self.process_button.setStyleSheet("background-color:#008e59; border-radius:8px;")
+        self.process_button.repaint()
+        QApplication.processEvents()
+        
+       
 
 
 if __name__ == "__main__":

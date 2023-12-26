@@ -6,7 +6,7 @@
 <div style={{ display: 'flex', justifyContent: 'center',  gap:'0.25rem'}}>
     <img src="./logo/Canon.png" />
     <img src="./logo/Nikon.png" />
-    <img src="./logo/SONY.png" />
+    <img src="./logo/Sony.png" />
     <img src="./logo/Hasselblad.png" />
   </div>
 </p>
